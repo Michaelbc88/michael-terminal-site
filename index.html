@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Michael Anane | Terminal Portfolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: url('https://images.unsplash.com/photo-1581091012184-5c38b5f1b9f5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80') no-repeat center center fixed;
+      background-size: cover;
+      color: #00ff90;
+      font-family: 'Fira Code', monospace;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .terminal {
+      background-color: rgba(0, 0, 0, 0.8);
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 0 20px #00ff90;
+      width: 90%;
+      max-width: 900px;
+      height: 80vh;
+      overflow-y: auto;
+      position: relative;
+    }
+    .input-line {
+      display: flex;
+    }
+    .input-line span {
+      margin-right: 8px;
+    }
+    .blinking-cursor {
+      animation: blink 1s step-start infinite;
+    }
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+    .intro {
+      color: #00ffff;
+    }
+    @media screen and (max-width: 768px) {
+      .terminal {
+        height: 70vh;
+        font-size: 0.85rem;
+      }
+    }
+    #start-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background-color: #00ff90;
+      color: black;
+      font-family: 'Fira Code', monospace;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 6px;
+      cursor: pointer;
+      box-shadow: 0 0 10px #00ff90;
+    }
+    #ghana-flag {
+      position: absolute;
+      bottom: 15px;
+      right: 15px;
+      width: 40px;
+      height: auto;
+      border-radius: 4px;
+      box-shadow: 0 0 5px #fff;
+    }
+  </style>
+</head>
+<body>
+  <button id="start-btn">🔊 Start Music</button>
+  <audio id="bg-music">
+    <source src="https://files.freemusicarchive.org/file/music/no_curator/StreamBeats_by_Harris_Heller/Lo_Fi/StreamBeats_by_Harris_Heller_-_LoFi_11_Midnight_Vibes.mp3" type="audio/mp3">
+    Your browser does not support the audio element.
+  </audio>
+
+  <div class="terminal" id="terminal">
+    <div class="intro">🇬🇭 Welcome to Michael Anane's Terminal Portfolio</div>
+    <div class="intro">Type <code>help</code> to see available commands.</div>
+  </div>
+
+  <img id="ghana-flag" src="https://upload.wikimedia.org/wikipedia/commons/1/19/Flag_of_Ghana.svg" alt="Ghana Flag">
+
+  <script>
+    const terminal = document.getElementById('terminal');
+    const startBtn = document.getElementById('start-btn');
+    const bgMusic = document.getElementById('bg-music');
+
+    startBtn.addEventListener('click', () => {
+      bgMusic.play();
+      startBtn.style.display = 'none';
+    });
+
+    let commands = {
+      help: `Available commands: about, skills, projects, resume, contact, clear`,
+      about: `Michael Anane is an undergraduate student at Brooklyn College studying Information Systems. He is focused on a career in cybersecurity and aims to become a cloud security engineer, securing data across cloud environments with innovative solutions.`,
+      skills: `Java, Python, Splunk, Excel, Power BI, Web Development`,
+      projects: `1. Threat Detection System (placeholder)\n2. Secure Login Portal (placeholder)\n3. Data Dashboard for Cyber Analytics (placeholder)`,
+      resume: `Download Resume: [placeholder link]`,
+      contact: `Email: Michaelanane88@outlook.com\nGitHub: github.com/Michaelbc88\nLinkedIn: linkedin.com/in/michael-a-8590b2321/`,
+      clear: ``
+    };
+
+    let userInput = '';
+
+    function renderInputLine() {
+      const inputLine = document.createElement('div');
+      inputLine.classList.add('input-line');
+      inputLine.innerHTML = `<span>&gt;</span><span contenteditable="true" class="blinking-cursor" id="user-input"></span>`;
+      terminal.appendChild(inputLine);
+      document.getElementById('user-input').focus();
+    }
+
+    function processCommand(cmd) {
+      const response = commands[cmd.toLowerCase()];
+      const output = document.createElement('div');
+      output.textContent = response !== undefined ? response : `Command not found: ${cmd}`;
+      terminal.appendChild(output);
+      if (cmd.toLowerCase() === 'clear') {
+        terminal.innerHTML = '';
+        const intro1 = document.createElement('div');
+        intro1.className = 'intro';
+        intro1.innerHTML = `🇬🇭 Welcome to Michael Anane's Terminal Portfolio`;
+        terminal.appendChild(intro1);
+        const intro2 = document.createElement('div');
+        intro2.className = 'intro';
+        intro2.innerHTML = `Type <code>help</code> to see available commands.`;
+        terminal.appendChild(intro2);
+      }
+    }
+
+    document.addEventListener('keydown', function(e) {
+      const input = document.getElementById('user-input');
+      if (!input) return;
+      if (e.key === 'Backspace') {
+        userInput = userInput.slice(0, -1);
+        input.textContent = userInput;
+        e.preventDefault();
+      } else if (e.key === 'Enter') {
+        terminal.removeChild(input.parentElement);
+        const commandDisplay = document.createElement('div');
+        commandDisplay.textContent = `> ${userInput}`;
+        terminal.appendChild(commandDisplay);
+        processCommand(userInput);
+        userInput = '';
+        renderInputLine();
+        terminal.scrollTop = terminal.scrollHeight;
+        e.preventDefault();
+      } else if (e.key.length === 1) {
+        userInput += e.key;
+        input.textContent = userInput;
+        e.preventDefault();
+      }
+    });
+
+    renderInputLine();
+  </script>
+</body>
+</html>
