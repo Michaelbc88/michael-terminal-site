@@ -73,6 +73,11 @@
       border-radius: 4px;
       box-shadow: 0 0 5px #fff;
     }
+    #hiddenInput {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
   </style>
 </head>
 <body>
@@ -88,18 +93,20 @@
   </div>
 
   <img id="ghana-flag" src="https://upload.wikimedia.org/wikipedia/commons/1/19/Flag_of_Ghana.svg" alt="Ghana Flag">
+  <input type="text" id="hiddenInput" autocomplete="off" />
 
   <script>
     const terminal = document.getElementById('terminal');
     const startBtn = document.getElementById('start-btn');
     const bgMusic = document.getElementById('bg-music');
+    const hiddenInput = document.getElementById('hiddenInput');
 
     startBtn.addEventListener('click', () => {
       bgMusic.play();
       startBtn.style.display = 'none';
     });
 
-    let commands = {
+    const commands = {
       help: `Available commands: about, skills, projects, resume, contact, clear`,
       about: `Michael Anane is an undergraduate student at Brooklyn College studying Information Systems. He is focused on a career in cybersecurity and aims to become a cloud security engineer, securing data across cloud environments with innovative solutions.`,
       skills: `Java, Python, Splunk, Excel, Power BI, Web Development`,
@@ -114,9 +121,9 @@
     function renderInputLine() {
       const inputLine = document.createElement('div');
       inputLine.classList.add('input-line');
-      inputLine.innerHTML = `<span>&gt;</span><span contenteditable="true" class="blinking-cursor" id="user-input"></span>`;
+      inputLine.innerHTML = `<span>&gt;</span><span class="blinking-cursor" id="user-input"></span>`;
       terminal.appendChild(inputLine);
-      document.getElementById('user-input').focus();
+      hiddenInput.focus();
     }
 
     function processCommand(cmd) {
@@ -137,31 +144,31 @@
       }
     }
 
-    document.addEventListener('keydown', function(e) {
-      const input = document.getElementById('user-input');
-      if (!input) return;
-      if (e.key === 'Backspace') {
-        userInput = userInput.slice(0, -1);
-        input.textContent = userInput;
-        e.preventDefault();
-      } else if (e.key === 'Enter') {
-        terminal.removeChild(input.parentElement);
+    hiddenInput.addEventListener('input', function () {
+      userInput = this.value;
+      const inputSpan = document.getElementById('user-input');
+      if (inputSpan) inputSpan.textContent = userInput;
+    });
+
+    hiddenInput.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') {
+        const inputLine = document.querySelector('.input-line');
+        if (inputLine) terminal.removeChild(inputLine);
         const commandDisplay = document.createElement('div');
         commandDisplay.textContent = `> ${userInput}`;
         terminal.appendChild(commandDisplay);
         processCommand(userInput);
         userInput = '';
+        this.value = '';
         renderInputLine();
         terminal.scrollTop = terminal.scrollHeight;
-        e.preventDefault();
-      } else if (e.key.length === 1) {
-        userInput += e.key;
-        input.textContent = userInput;
-        e.preventDefault();
       }
     });
 
+    // Initialize
     renderInputLine();
+    hiddenInput.focus();
+    terminal.addEventListener('click', () => hiddenInput.focus());
   </script>
 </body>
 </html>
