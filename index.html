@@ -111,7 +111,9 @@
       about: `Michael Anane is an undergraduate student at the City University of New York, Brooklyn College, pursuing a degree in Information Systems. With a strong foundation in data management, networks, and enterprise systems, he is building toward a career in cybersecurity—specifically aiming to become a cloud security engineer focused on protecting data across cloud environments.`,
       skills: `Java, Python, Splunk, Excel, Power BI, Web Development`,
       projects: `1. Threat Detection System (placeholder)\n2. Secure Login Portal (placeholder)\n3. Data Dashboard for Cyber Analytics (placeholder)`,
-      resume: `Download Resume: [placeholder link]`,
+      resume: `Opening resume...\n<a href="2025MichaelAnaneResume.pdf" target="_blank">Click here if it doesn’t open automatically.</a>`,
+  
+ 
       contact: `Email: Michaelanane88@outlook.com\nGitHub: github.com/Michaelbc88\nLinkedIn: linkedin.com/in/michael-a-8590b2321/`,
       clear: ``
     };
@@ -129,7 +131,7 @@
     function processCommand(cmd) {
       const response = commands[cmd.toLowerCase()];
       const output = document.createElement('div');
-      output.textContent = response !== undefined ? response : `Command not found: ${cmd}`;
+      output.innerHTML = response !== undefined ? response : `Command not found: ${cmd}`;
       terminal.appendChild(output);
       if (cmd.toLowerCase() === 'clear') {
         terminal.innerHTML = '';
